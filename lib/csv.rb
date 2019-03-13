@@ -1106,12 +1106,40 @@ class CSV
   ### IO and StringIO Delegation ###
 
   extend Forwardable
-  def_delegators :@io, :binmode, :binmode?, :close, :close_read, :close_write,
+  def_delegators :@io, :binmode, :close, :close_read, :close_write,
                        :closed?, :external_encoding, :fcntl,
-                       :fileno, :flock, :flush, :fsync, :internal_encoding,
-                       :ioctl, :isatty, :path, :pid, :pos, :pos=, :reopen,
-                       :seek, :stat, :string, :sync, :sync=, :tell, :to_i,
-                       :to_io, :truncate, :tty?
+                       :fileno, :flush, :fsync, :internal_encoding,
+                       :isatty, :pid, :pos, :pos=, :reopen,
+                       :seek, :string, :sync, :sync=, :tell,
+                       :truncate, :tty?
+
+  def binmode?
+    @io.binmode? if @io.respond_to?(:binmode?)
+  end
+
+  def flock(*args)
+    @io.flock(*args) if @io.respond_to?(:flock)
+  end
+
+  def ioctl(*args)
+    @io.ioctl(*args) if @io.respond_to?(:ioctl)
+  end
+
+  def path
+    @io.path if @io.respond_to?(:path)
+  end
+
+  def stat(*args)
+    @io.stat(*args) if @io.respond_to?(:stat)
+  end
+
+  def to_i
+    @io.respond_to?(:to_i) ? @io.to_i : 0
+  end
+
+  def to_io
+    @io.respond_to?(:to_io) ? @io.to_io : @io
+  end
 
   def eof?
     begin
